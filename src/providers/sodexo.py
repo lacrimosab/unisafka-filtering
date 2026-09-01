@@ -12,6 +12,7 @@ def get_hertsi_meal(date: str) -> list[Meal]:
     response.raise_for_status()
 
     data = response.json()
+    print(next(iter(data["courses"].values())))
 
     meals = []
     for course in data["courses"].values():
