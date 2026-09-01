@@ -17,7 +17,7 @@ def get_hertsi_meal(date: str) -> list[Meal]:
     for course in data["courses"].values():
         meal = Meal(
             restaurant="Hertsi",
-            name=course["title_fi"],
+            name=course["title_en"],
         )
 
         meals.append(meal)
