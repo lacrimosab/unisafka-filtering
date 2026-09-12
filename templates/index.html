@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link
         rel="stylesheet"
@@ -8,8 +9,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>UniSafka</title>
+    <title>Unisafka Filtering</title>
 </head>
+
 <body>
     <main class="page-content">
         <h1>Hertsi meals</h1>
@@ -25,11 +27,11 @@
                     value="{{ selected_date }}"
                 >
             </div>
-
             <button type="submit">Show meals</button>
         </form>
 
         <section class="meal-grid">
+            <!-- introducing Jinja here, creates article for each independent meal -->
             {% for meal in meals %}
                 <article class="meal-card">
                     <h2>{{ meal.name }}</h2>
