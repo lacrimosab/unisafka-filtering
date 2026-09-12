@@ -29,33 +29,35 @@
             <button type="submit">Show meals</button>
         </form>
 
-        {% for meal in meals %}
-            <article>
-                <h2>{{ meal.name }}</h2>
+        <section class="meal-grid"></section>
+            {% for meal in meals %}
+                <article class="meal-card">
+                    <h2>{{ meal.name }}</h2>
 
-                <p>Restaurant: {{ meal.restaurant }}</p>
+                    <p>Restaurant: {{ meal.restaurant }}</p>
 
-                <p>
-                    Dietary labels:
-                    {% if meal.diets %}
-                        {{ meal.diets | sort | join(", ") }}
-                    {% else %}
-                        No dietary information
-                    {% endif %}
-                </p>
+                    <p>
+                        Dietary labels:
+                        {% if meal.diets %}
+                            {{ meal.diets | sort | join(", ") }}
+                        {% else %}
+                            No dietary information
+                        {% endif %}
+                    </p>
 
-                <p>
-                    Allergens:
-                    {% if meal.allergens %}
-                        {{ meal.allergens | sort | join(", ") }}
-                    {% else %}
-                        No allergen information
-                    {% endif %}
-                </p>
-            </article>
-        {% else %}
-            <p>No meals were found for this date.</p>
-        {% endfor %}
+                    <p>
+                        Allergens:
+                        {% if meal.allergens %}
+                            {{ meal.allergens | sort | join(", ") }}
+                        {% else %}
+                            No allergen information
+                        {% endif %}
+                    </p>
+                </article>
+            {% else %}
+                <p>No meals were found for this date.</p>
+            {% endfor %}
+        </section>
     </main>
 </body>
 </html>

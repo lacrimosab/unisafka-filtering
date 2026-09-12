@@ -46,3 +46,24 @@ body {
     color: white;
     cursor: pointer;
 }
+
+.meal-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(280px, 1fr)
+    );
+    gap: 1rem;
+}
+
+.meal-card {
+    padding: 1.25rem;
+    background-color: white;
+    border: 1px solid #dce3dd;
+    border-radius: 0.75rem;
+}
+
+.meal-card h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+}
