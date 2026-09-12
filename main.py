@@ -1,6 +1,6 @@
 from src.providers.sodexo import get_hertsi_meal
 
-meals = get_hertsi_meal("2026-09-14")
+meals = get_hertsi_meal("2026-09-11")
 
 for meal in meals:
     diets = ", ".join(sorted(meal.diets)) or "No dietary information"
