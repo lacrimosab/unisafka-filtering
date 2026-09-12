@@ -41,9 +41,14 @@ def get_hertsi_meal(date: str) -> list[Meal]:
     response.raise_for_status()
 
     data = response.json()
+    courses = data.get("courses")
+
+    # true for an empty list, empty dict, and any missing values
+    if not courses:       
+        return []
 
     meals = []
-    for course in data["courses"].values():
+    for course in courses.values():
 
         additional_diet_info = course.get("additionalDietInfo") or {}
         allergen_text = additional_diet_info.get("allergens_en") or ""
