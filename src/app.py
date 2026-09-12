@@ -1,12 +1,19 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 from src.providers.sodexo import get_hertsi_meal
 
 from datetime import date
 
+
 app = FastAPI()
+app.mount(
+    "/static",
+    StaticFiles(directory="static"),
+    name="static",
+)
 
 templates = Jinja2Templates(directory="templates")
 

@@ -1,52 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='/styles.css') }}"
+    >
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>UniSafka</title>
 </head>
 <body>
-    <h1>Hertsi meals</h1>
-    <form method="get">
-        <label for="menu-date">Menu date</label>
+    <main class="page-content"></main>
+        <h1>Hertsi meals</h1>
+        <form method="get">
+            <label for="menu-date">Menu date</label>
 
-        <input
-            id="menu-date"
-            name="menu_date"
-            type="date"
-            value="{{ selected_date }}"
-        >
+            <input
+                id="menu-date"
+                name="menu_date"
+                type="date"
+                value="{{ selected_date }}"
+            >
 
-        <button type="submit">Show meals</button>
-    </form>
+            <button type="submit">Show meals</button>
+        </form>
 
-    {% for meal in meals %}
-        <article>
-            <h2>{{ meal.name }}</h2>
+        {% for meal in meals %}
+            <article>
+                <h2>{{ meal.name }}</h2>
 
-            <p>Restaurant: {{ meal.restaurant }}</p>
+                <p>Restaurant: {{ meal.restaurant }}</p>
 
-            <p>
-                Dietary labels:
-                {% if meal.diets %}
-                    {{ meal.diets | sort | join(", ") }}
-                {% else %}
-                    No dietary information
-                {% endif %}
-            </p>
+                <p>
+                    Dietary labels:
+                    {% if meal.diets %}
+                        {{ meal.diets | sort | join(", ") }}
+                    {% else %}
+                        No dietary information
+                    {% endif %}
+                </p>
 
-            <p>
-                Allergens:
-                {% if meal.allergens %}
-                    {{ meal.allergens | sort | join(", ") }}
-                {% else %}
-                    No allergen information
-                {% endif %}
-            </p>
-        </article>
-    {% else %}
-        <p>No meals were found for this date.</p>
-    {% endfor %}
+                <p>
+                    Allergens:
+                    {% if meal.allergens %}
+                        {{ meal.allergens | sort | join(", ") }}
+                    {% else %}
+                        No allergen information
+                    {% endif %}
+                </p>
+            </article>
+        {% else %}
+            <p>No meals were found for this date.</p>
+        {% endfor %}
+    </main>
 </body>
 </html>
