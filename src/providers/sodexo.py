@@ -2,6 +2,35 @@ import requests
 
 from src.models import Meal
 
+SODEXO_DIET_LABELS = {
+    "G": "Gluten-free",
+    "L": "Lactose-free",
+    "M": "Milk-free",
+    "VL": "Low-lactose",
+}
+
+def parse_sodexo_diets(course: dict) -> set[str]:
+    raw_codes = course.get("dietcodes") or ""
+    diets = set()
+
+    for raw_code in raw_codes.split(","):
+        code = raw_code.strip()
+
+        if not code:
+            continue
+
+        label = SODEXO_DIET_LABELS.get(code)
+
+        if label:
+            diets.add(label)
+
+    category = course.get("category") or ""
+
+    if "VEGAN" in category.upper():
+        diets.add("Vegan")
+
+    return diets
+
 def get_hertsi_meal(date: str) -> list[Meal]:
     url = (
         "https://www.sodexo.fi/"
@@ -16,15 +45,9 @@ def get_hertsi_meal(date: str) -> list[Meal]:
     meals = []
     for course in data["courses"].values():
 
-        dietcodes = course.get("dietcodes") or ""
         additional_diet_info = course.get("additionalDietInfo") or {}
         allergen_text = additional_diet_info.get("allergens_en") or ""
-
-        diets = set()
-        for code in dietcodes.split(","):
-            cleaned_code = code.strip()
-            if cleaned_code:
-                diets.add(cleaned_code)
+        diets = parse_sodexo_diets(course)
                 
         allergens = set()
         for allergen in allergen_text.split(","):
