@@ -67,3 +67,33 @@ body {
     margin-top: 0;
     font-size: 1.1rem;
 }
+
+.diet-section {
+    margin-top: 1rem;
+}
+
+.diet-section h3 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+}
+
+.diet-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.diet-label {
+    display: inline-block;
+    padding: 0.35rem 0.6rem;
+    background-color: #dff2e7;
+    color: #176b45;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.diet-label--unknown {
+    background-color: #e8ebe9;
+    color: #68756c;
+}

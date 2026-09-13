@@ -47,6 +47,22 @@
                         {% endif %}
                     </p>
 
+                    <div class="diet-section">
+                        <h3>Dietary information</h3>
+
+                        <div class="diet-labels">
+                            {% for diet in meal.diets | sort %}
+                                <span class="diet-label">
+                                    {{ diet }}
+                                </span>
+                            {% else %}
+                                <span class="diet-label diet-label--unknown">
+                                    No dietary information
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
                     <p>
                         Allergens:
                         {% if meal.allergens %}
