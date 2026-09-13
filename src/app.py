@@ -18,9 +18,11 @@ app.mount(
 templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request,
-         menu_date: str | None = None,
-         vegan_only: bool = False, ):
+def home(
+    request: Request,
+    menu_date: str | None = None,
+    vegan_only: bool = False,
+    gluten_free_only: bool = False,):
 
     selected_date = menu_date or date.today().isoformat()
     meals = get_hertsi_meal(selected_date)
@@ -33,11 +35,21 @@ def home(request: Request,
 
         meals = vegan_meals
 
+    if gluten_free_only:
+        gluten_free_meals = []
+
+        for meal in meals:
+            if "Gluten-free" in meal.diets:
+                gluten_free_meals.append(meal)
+
+        meals = gluten_free_meals
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
         context={"meals": meals,
                 "selected_date": selected_date,
                 "vegan_only": vegan_only, # added to keep checkbox even after page reload
+                "gluten_free_only": gluten_free_only,
         },
     )

@@ -34,8 +34,16 @@
                     value="true"
                     {% if vegan_only %}checked{% endif %}
                 >
-
                 Vegan only
+            </label>
+            <label class="filter-checkbox">
+                <input
+                    type="checkbox"
+                    name="gluten_free_only"
+                    value="true"
+                    {% if gluten_free_only %}checked{% endif %}
+                >
+                Gluten free only
             </label>
             <button type="submit">Show meals</button>
         </form>
