@@ -19,15 +19,25 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request,
-        menu_date: str | None = None):
+         menu_date: str | None = None,
+         vegan_only: bool = False, ):
 
     selected_date = menu_date or date.today().isoformat()
     meals = get_hertsi_meal(selected_date)
+    if vegan_only:
+        vegan_meals = []
+
+        for meal in meals:
+            if "Vegan" in meal.diets:
+                vegan_meals.append(meal)
+
+        meals = vegan_meals
 
     return templates.TemplateResponse(
         request=request,
         name="index.html",
         context={"meals": meals,
-                "selected_date": selected_date
+                "selected_date": selected_date,
+                "vegan_only": vegan_only, # added to keep checkbox even after page reload
         },
     )

@@ -122,3 +122,16 @@ body {
     background-color: #e8ebe9;
     color: #68756c;
 }
+
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.5rem;
+    cursor: pointer;
+}
+
+.filter-checkbox input {
+    width: 1rem;
+    height: 1rem;
+}

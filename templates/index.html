@@ -27,6 +27,16 @@
                     value="{{ selected_date }}"
                 >
             </div>
+            <label class="filter-checkbox">
+                <input
+                    type="checkbox"
+                    name="vegan_only"
+                    value="true"
+                    {% if vegan_only %}checked{% endif %}
+                >
+
+                Vegan only
+            </label>
             <button type="submit">Show meals</button>
         </form>
 
@@ -37,15 +47,6 @@
                     <h2>{{ meal.name }}</h2>
 
                     <p>Restaurant: {{ meal.restaurant }}</p>
-
-                    <p>
-                        Dietary labels:
-                        {% if meal.diets %}
-                            {{ meal.diets | sort | join(", ") }}
-                        {% else %}
-                            No dietary information
-                        {% endif %}
-                    </p>
 
                     <div class="diet-section">
                         <h3>Dietary information</h3>
