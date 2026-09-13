@@ -52,7 +52,8 @@
 
                         <div class="diet-labels">
                             {% for diet in meal.diets | sort %}
-                                <span class="diet-label">
+                                <!-- creating css into its own class -->
+                                <span class="diet-label diet-label--{{ diet | lower | replace(' ', '-') }}">
                                     {{ diet }}
                                 </span>
                             {% else %}

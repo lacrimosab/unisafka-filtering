@@ -86,11 +86,36 @@ body {
 .diet-label {
     display: inline-block;
     padding: 0.35rem 0.6rem;
-    background-color: #dff2e7;
-    color: #176b45;
+    background-color: #e8ebe9;
+    color: #2f3a32;
     border-radius: 999px;
     font-size: 0.8rem;
     font-weight: bold;
+}
+
+.diet-label--vegan {
+    background-color: #dff2e7;
+    color: #176b45;
+}
+
+.diet-label--gluten-free {
+    background-color: #fff0c7;
+    color: #6b4a00;
+}
+
+.diet-label--milk-free {
+    background-color: #e1efff;
+    color: #245a8d;
+}
+
+.diet-label--lactose-free {
+    background-color: #eee7ff;
+    color: #5b3f99;
+}
+
+.diet-label--low-lactose {
+    background-color: #fce5ef;
+    color: #843b5c;
 }
 
 .diet-label--unknown {
