@@ -10,6 +10,38 @@ REAKTORI_URL = (
     "kaupungit/tampere/reaktori/"
 )
 
+COMPASS_DIET_LABELS = {
+    "G": "Gluten-free",
+    "L": "Lactose-free",
+    "M": "Milk-free",
+    "VL": "Low-lactose",
+    "Veg": "Vegan",
+}
+
+def parse_compass_food(
+    food_text: str,
+) -> tuple[str, set[str]]:
+    # rpartition here is partition from the right side
+    name, separator, codes_text = food_text.rpartition(" (")
+
+    if not separator or not codes_text.endswith(")"):
+        return food_text.strip(), set()
+
+    codes_text = codes_text.removesuffix(")")
+
+    codes = {
+        code.strip()
+        for code in codes_text.split(",")
+    }
+
+    diets = {
+        COMPASS_DIET_LABELS[code]
+        for code in codes
+        if code in COMPASS_DIET_LABELS
+    }
+
+    return name.strip(), diets
+
 def fetch_reaktori_page() -> str:
     response = requests.get(
         REAKTORI_URL,
