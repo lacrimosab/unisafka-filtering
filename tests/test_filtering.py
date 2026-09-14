@@ -25,3 +25,28 @@ def test_vegan_filter_keeps_only_vegan_meals():
     )
 
     assert result == [vegan_meal]
+
+def test_gluten_free_filter_keeps_only_gluten_free_meals():
+    gluten_free_meal = Meal(
+        restaurant="sample restoran",
+        name="Gluten-free curry",
+        diets={"Gluten-free"},
+    )
+
+    regular_meal = Meal(
+        restaurant="sample restoran",
+        name="Regular pasta",
+        diets={"Lactose-free"},
+    )
+
+    meals = [
+        gluten_free_meal,
+        regular_meal,
+    ]
+
+    result = filter_meals(
+        meals=meals,
+        gluten_free_only=True,
+    )
+
+    assert result == [gluten_free_meal]
