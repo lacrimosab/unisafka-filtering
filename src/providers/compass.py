@@ -20,7 +20,7 @@ def fetch_reaktori_page() -> str:
 
     return response.text
 
-def get_reaktori_meal_headings(selected_date: date) -> list[str]:
+def get_reaktori_foods(selected_date: date) -> list[str]:
     html = fetch_reaktori_page()
     soup = BeautifulSoup(html, "html.parser")
 
@@ -40,15 +40,27 @@ def get_reaktori_meal_headings(selected_date: date) -> list[str]:
             break   
 
     if selected_day_heading is None:
-        return []
+        return {}
 
-    meal_headings = []
-    
-    # h3 is day of the week, h4 is the meal category
-    for heading in selected_day_heading.find_all_next(["h3", "h4"]):
-        if heading.name == "h3":
+    foods_by_category = {}
+    current_category = None
+
+    elements = selected_day_heading.find_all_next(
+        ["h3", "h4", "li"]
+    )
+
+    for element in elements:
+        if element.name == "h3":
             break
 
-        meal_headings.append(heading.get_text(" ", strip = True))
+        if element.name == "h4":
+            current_category = element.get_text(" ", strip=True,)
+            foods_by_category[current_category] = []
+            continue
 
-    return meal_headings
+        if element.name == "li" and current_category is not None:
+            food_text = element.get_text(" ", strip=True)
+            foods_by_category[current_category].append(food_text)
+
+    return foods_by_category
+
