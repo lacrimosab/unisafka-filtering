@@ -2,10 +2,10 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-
-from src.providers.sodexo import get_hertsi_meal
-
 from datetime import date
+from src.providers.sodexo import get_hertsi_meal
+from src.filtering import filter_meals
+
 
 
 app = FastAPI()
@@ -28,35 +28,13 @@ def home(
 
     selected_date = menu_date or date.today().isoformat()
     meals = get_hertsi_meal(selected_date)
-    if vegan_only:
-        vegan_meals = []
 
-        for meal in meals:
-            if "Vegan" in meal.diets:
-                vegan_meals.append(meal)
-
-        meals = vegan_meals
-
-    if gluten_free_only:
-        gluten_free_meals = []
-
-        for meal in meals:
-            if "Gluten-free" in meal.diets:
-                gluten_free_meals.append(meal)
-
-        meals = gluten_free_meals
-
-    if lactose_free_only:
-        lactose_free_meals = []
-
-        for meal in meals:
-            if (
-                "Lactose-free" in meal.diets or
-                "Milk-free" in meal.diets
-            ):
-                lactose_free_meals.append(meal)
-
-        meals = lactose_free_meals
+    meals = filter_meals(
+    meals=meals,
+    vegan_only=vegan_only,
+    gluten_free_only=gluten_free_only,
+    lactose_free_only=lactose_free_only,
+)
 
     return templates.TemplateResponse(
         request=request,
