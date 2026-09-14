@@ -27,6 +27,7 @@
                     value="{{ selected_date }}"
                 >
             </div>
+
             <label class="filter-checkbox">
                 <input
                     type="checkbox"
@@ -36,6 +37,7 @@
                 >
                 Vegan only
             </label>
+
             <label class="filter-checkbox">
                 <input
                     type="checkbox"
@@ -43,8 +45,20 @@
                     value="true"
                     {% if gluten_free_only %}checked{% endif %}
                 >
-                Gluten free only
+                Gluten-free only
             </label>
+
+            <label class="filter-checkbox">
+                <input
+                    type="checkbox"
+                    name="lactose_free_only"
+                    value="true"
+                    {% if lactose_free_only %}checked{% endif %}
+                >
+
+                Lactose-free only
+            </label>
+
             <button type="submit">Show meals</button>
         </form>
 

@@ -22,7 +22,9 @@ def home(
     request: Request,
     menu_date: str | None = None,
     vegan_only: bool = False,
-    gluten_free_only: bool = False,):
+    gluten_free_only: bool = False,
+    lactose_free_only: bool = False,
+):
 
     selected_date = menu_date or date.today().isoformat()
     meals = get_hertsi_meal(selected_date)
@@ -44,6 +46,18 @@ def home(
 
         meals = gluten_free_meals
 
+    if lactose_free_only:
+        lactose_free_meals = []
+
+        for meal in meals:
+            if (
+                "Lactose-free" in meal.diets or
+                "Milk-free" in meal.diets
+            ):
+                lactose_free_meals.append(meal)
+
+        meals = lactose_free_meals
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
@@ -51,5 +65,6 @@ def home(
                 "selected_date": selected_date,
                 "vegan_only": vegan_only, # added to keep checkbox even after page reload
                 "gluten_free_only": gluten_free_only,
+                "lactose_free_only": lactose_free_only,
         },
     )
