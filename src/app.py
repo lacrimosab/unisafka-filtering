@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from datetime import date
 from src.providers.sodexo import get_hertsi_meal
+from src.providers.compass import get_reaktori_meals
 from src.filtering import filter_meals
 
 
@@ -27,7 +28,12 @@ def home(
 ):
 
     selected_date = menu_date or date.today().isoformat()
-    meals = get_hertsi_meal(selected_date)
+    requested_date = date.fromisoformat(selected_date)
+
+    hertsi_meals = get_hertsi_meal(selected_date)
+    reaktori_meals = get_reaktori_meals(requested_date)
+
+    meals = hertsi_meals + reaktori_meals
 
     meals = filter_meals(
     meals=meals,
