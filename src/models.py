@@ -7,6 +7,7 @@ class Meal:
 
     diets: set[str] = field(default_factory=set)
     allergens: set[str] = field(default_factory=set)
+    allergen_details_available: bool = False
 
     calories: float | None = None
     protein_g: float | None = None

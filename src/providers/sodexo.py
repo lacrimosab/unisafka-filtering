@@ -104,6 +104,7 @@ def get_hertsi_meal(
             name=course["title_en"],
             diets=diets,
             allergens=allergens,
+            allergen_details_available=bool(allergens),
             price=student_price,
         )
 
