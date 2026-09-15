@@ -121,7 +121,7 @@ def get_reaktori_foods(
             food_text = element.get_text(" ", strip=True)
             food_name, diets = parse_compass_food(food_text)
 
-            foods_by_category[current_category].append(
+            foods_by_category[current_category].foods.append(
                 (food_name, diets)
             )
 

@@ -64,9 +64,30 @@ body {
     border-radius: 0.75rem;
 }
 
+.meal-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
 .meal-card h2 {
     margin-top: 0;
     font-size: 1.1rem;
+}
+
+.meal-card-header h3 {
+    margin: 0;
+}
+
+.meal-price {
+    flex-shrink: 0;
+    padding: 0.3rem 0.55rem;
+    background-color: #edf4ef;
+    color: #315c3d;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: bold;
 }
 
 .diet-section {
