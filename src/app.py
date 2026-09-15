@@ -50,10 +50,10 @@ def home(
         request=request,
         name="index.html",
         context={"meals": meals,
-                "selected_date": selected_date,
-                "week_dates": week_dates,
-                "vegan_only": vegan_only, # added to keep checkbox even after page reload
-                "gluten_free_only": gluten_free_only,
-                "lactose_free_only": lactose_free_only,
+            "selected_date": selected_date,
+            "week_dates": week_dates,
+            "vegan_only": vegan_only, # added to keep checkbox even after page reload
+            "gluten_free_only": gluten_free_only,
+            "lactose_free_only": lactose_free_only,
         },
     )
