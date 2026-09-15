@@ -1,3 +1,4 @@
+from datetime import date
 import requests
 
 from src.models import Meal
@@ -8,6 +9,16 @@ SODEXO_DIET_LABELS = {
     "M": "Milk-free",
     "VL": "Low-lactose",
 }
+
+FINNISH_WEEKDAYS = [
+    "Maanantai",
+    "Tiistai",
+    "Keskiviikko",
+    "Torstai",
+    "Perjantai",
+    "Lauantai",
+    "Sunnuntai",
+]
 
 def parse_sodexo_diets(course: dict) -> set[str]:
     raw_codes = course.get("dietcodes") or ""
@@ -31,17 +42,44 @@ def parse_sodexo_diets(course: dict) -> set[str]:
 
     return diets
 
-def get_hertsi_meal(date: str) -> list[Meal]:
+def get_hertsi_meal(
+    selected_date: str,
+) -> list[Meal]:
+    requested_date = date.fromisoformat(selected_date)
+    current_date = date.today()
+
+    requested_week = requested_date.isocalendar()
+    current_week = current_date.isocalendar()
+
+    # prevent dates outside the current week from selecting the wrong weekday
+    if (requested_week.year, requested_week.week) != (current_week.year, current_week.week):
+        return []
+
     url = (
         "https://www.sodexo.fi/"
-        f"ruokalistat/output/daily_json/111/{date}"
+        "ruokalistat/output/weekly_json/111"
     )
 
     response = requests.get(url, timeout=10)
     response.raise_for_status()
 
+    response.encoding = "utf-8"
     data = response.json()
-    courses = data.get("courses")
+
+    weekday_name = FINNISH_WEEKDAYS[
+        requested_date.weekday()
+    ]
+
+    selected_day = None
+    for meal_date in data.get("mealdates") or []:
+        if meal_date.get("date") == weekday_name:
+            selected_day = meal_date
+            break
+
+    if selected_day is None:
+        return []
+
+    courses = selected_day.get("courses")
 
     # true for an empty list, empty dict, and any missing values
     if not courses:       
