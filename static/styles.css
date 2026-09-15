@@ -71,13 +71,9 @@ body {
     gap: 1rem;
 }
 
-.meal-card h2 {
-    margin-top: 0;
-    font-size: 1.1rem;
-}
-
 .meal-card-header h3 {
     margin: 0;
+    font-size: 1.1rem;
 }
 
 .meal-price {
@@ -94,7 +90,7 @@ body {
     margin-top: 1rem;
 }
 
-.diet-section h3 {
+.diet-section h4 {
     margin: 0 0 0.5rem;
     font-size: 0.9rem;
 }
