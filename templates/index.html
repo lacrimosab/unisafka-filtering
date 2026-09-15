@@ -73,43 +73,38 @@
                         <!-- introducing Jinja here, creates article for each independent meal -->
                         {% for meal in restaurant_meals %}    
                             <article class="meal-card">
-                                <div class="meal-card-header">
-                                    <h3>{{ meal.name }}</h3>
+                                <h3 class="meal-name">
+                                    {{ meal.name }}
+                                </h3>
+                                    <div class="meal-card-footer">
+                                        <div class="diet-labels">
+                                            {% for diet in meal.diets | sort %}
+                                                <span class="diet-label diet-label--{{ diet | lower | replace(' ', '-') }}">
+                                                    {{ diet }}
+                                                </span>
+                                            {% else %}
+                                                <span class="diet-label diet-label--unknown">
+                                                    No dietary information
+                                                </span>
+                                            {% endfor %}
+                                        </div>
 
-                                    {% if meal.price is not none %}
-                                        <span class="meal-price">
-                                            {{ "%.2f" | format(meal.price) }} €
-                                        </span>
-                                    {% endif %}
-                                </div>
-
-
-                                <div class="diet-section">
-                                    
-                                    <h4>Dietary information</h4>
-
-                                    <div class="diet-labels">
-                                        {% for diet in meal.diets | sort %}
-                                            <!-- creating css into its own class -->
-                                            <span class="diet-label diet-label--{{ diet | lower | replace(' ', '-') }}">
-                                                {{ diet }}
+                                        {% if meal.price is not none %}
+                                            <span class="meal-price">
+                                                {{ "%.2f" | format(meal.price) }} €
                                             </span>
-                                        {% else %}
-                                            <span class="diet-label diet-label--unknown">
-                                                No dietary information
-                                            </span>
-                                        {% endfor %}
+                                        {% endif %}
                                     </div>
-                                </div>
 
-                                <p>
-                                    Allergens:
-                                    {% if meal.allergens %}
-                                        {{ meal.allergens | sort | join(", ") }}
-                                    {% else %}
-                                        No allergen information
-                                    {% endif %}
-                                </p>
+                                    <p class="allergen-summary">
+                                        {% if meal.allergens %}
+                                            Allergens:
+                                            {{ meal.allergens | sort | join(", ") }}
+                                        {% else %}
+                                            No detailed allergen information
+                                        {% endif %}
+                                    </p>
+                                
                             </article>
                         {% endfor %}
                     </div>
