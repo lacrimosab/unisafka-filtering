@@ -22,17 +22,14 @@ body {
     padding: 2rem 1.5rem;
 }
 
-.date-form button {
+.date-form > button {
     min-height: 2.5rem;
     padding: 0.5rem 0.75rem;
     border: 1px solid #bdc8bf;
     border-radius: 0.5rem;
-    font: inherit;
-}
-
-.date-form button {
     background-color: #0280a3;
     color: white;
+    font: inherit;
     cursor: pointer;
 }
 
@@ -84,6 +81,27 @@ body {
 
     box-shadow: 0 2px 8px rgba(29, 42, 33, 0.05);
     cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.date-option--selected {
+    background-color: #247a5a;
+    color: white;
+    border-color: #247a5a;
+    box-shadow: 0 4px 12px rgba(36, 122, 90, 0.22);
+}
+
+.date-option:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(29, 42, 33, 0.13);
+}
+
+.date-option:focus-visible {
+    outline: 3px solid rgba(36, 122, 90, 0.3);
+    outline-offset: 2px;
 }
 
 .date-option-weekday {
