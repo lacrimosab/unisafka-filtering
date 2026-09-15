@@ -61,45 +61,55 @@
 
             <button type="submit">Show meals</button>
         </form>
+        {% if meals %}
+            <!-- each restaurant has a section, and each section has food items -->
+            {% for restaurant, restaurant_meals in meals | groupby("restaurant") %}
+                <section class="restaurant-section">
+                    <h2 class="restaurant-heading">
+                        {{ restaurant }}
+                    </h2>
 
-        <section class="meal-grid">
-            <!-- introducing Jinja here, creates article for each independent meal -->
-            {% for meal in meals %}
-                <article class="meal-card">
-                    <h2>{{ meal.name }}</h2>
+                    <div class="meal-grid">
+                        <!-- introducing Jinja here, creates article for each independent meal -->
+                        {% for meal in restaurant_meals %}    
+                            <article class="meal-card">
+                                <h3>{{ meal.name }}</h3>
 
-                    <p>Restaurant: {{ meal.restaurant }}</p>
+                                <div class="diet-section">
+                                    
+                                    <h4>Dietary information</h4>
 
-                    <div class="diet-section">
-                        <h3>Dietary information</h3>
+                                    <div class="diet-labels">
+                                        {% for diet in meal.diets | sort %}
+                                            <!-- creating css into its own class -->
+                                            <span class="diet-label diet-label--{{ diet | lower | replace(' ', '-') }}">
+                                                {{ diet }}
+                                            </span>
+                                        {% else %}
+                                            <span class="diet-label diet-label--unknown">
+                                                No dietary information
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
 
-                        <div class="diet-labels">
-                            {% for diet in meal.diets | sort %}
-                                <!-- creating css into its own class -->
-                                <span class="diet-label diet-label--{{ diet | lower | replace(' ', '-') }}">
-                                    {{ diet }}
-                                </span>
-                            {% else %}
-                                <span class="diet-label diet-label--unknown">
-                                    No dietary information
-                                </span>
-                            {% endfor %}
-                        </div>
+                                <p>
+                                    Allergens:
+                                    {% if meal.allergens %}
+                                        {{ meal.allergens | sort | join(", ") }}
+                                    {% else %}
+                                        No allergen information
+                                    {% endif %}
+                                </p>
+                            </article>
+                        {% endfor %}
                     </div>
-
-                    <p>
-                        Allergens:
-                        {% if meal.allergens %}
-                            {{ meal.allergens | sort | join(", ") }}
-                        {% else %}
-                            No allergen information
-                        {% endif %}
-                    </p>
-                </article>
-            {% else %}
-                <p>No meals were found for this date.</p>
+                </section>
             {% endfor %}
-        </section>
-    </main>
+        {% else %}
+            <p>No meals were found for this date.</p>
+        {% endif %}
+    </main>     
+            
 </body>
 </html>
