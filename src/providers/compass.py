@@ -1,5 +1,6 @@
 from datetime import date
 from src.models import Meal
+from dataclasses import dataclass
 
 from bs4 import BeautifulSoup
 import requests
@@ -18,6 +19,11 @@ COMPASS_DIET_LABELS = {
     "VL": "Low-lactose",
     "Veg": "Vegan",
 }
+
+@dataclass
+class ReaktoriCategory:
+    foods: list[tuple[str, set[str]]]
+    price: float | None
 
 def parse_compass_food(
     food_text: str,
@@ -50,13 +56,14 @@ def fetch_reaktori_page() -> str:
     )
 
     response.raise_for_status()
+    response.encoding = "utf-8"
 
     return response.text
 
 # foods in the format {"So Good": [("Minced meat sauce", {"Lactose-free", "Milk-free"})]}
 def get_reaktori_foods(
         selected_date: date
-    ) -> dict[str, list[tuple[str, set[str]]]]:
+    ) -> dict[str, ReaktoriCategory]:
 
     html = fetch_reaktori_page()
     soup = BeautifulSoup(html, "html.parser")
@@ -92,8 +99,23 @@ def get_reaktori_foods(
 
         if element.name == "h4":
             current_category = element.get_text(" ", strip=True,)
-            foods_by_category[current_category] = []
+
+            price_element = element.find_next_sibling("p")
+
+            if price_element is None:
+                price_text = ""
+            else:
+                price_text = price_element.get_text(" ", strip = True)
+
+            student_price = parse_compass_student_price(price_text)
+
+            foods_by_category[current_category] = ReaktoriCategory(
+                foods = [],
+                price=student_price,
+            )
+
             continue
+        
 
         if element.name == "li" and current_category is not None:
             food_text = element.get_text(" ", strip=True)
@@ -112,7 +134,9 @@ def get_reaktori_meals(
 
     meals = []
 
-    for foods in foods_by_category.values():
+    for category in foods_by_category.values():
+        foods = category.foods
+
         if not foods:
             continue
 
@@ -132,8 +156,30 @@ def get_reaktori_meals(
             restaurant="Reaktori",
             name=meal_name,
             diets=shared_diets,
+            price=category.price
         )
 
         meals.append(meal)
 
     return meals
+
+def parse_compass_student_price(
+    price_text: str,
+) -> float | None:
+    if not price_text:
+        return None
+
+    student_part = price_text.split("/")[0]
+
+    number_text = (
+        student_part
+        .replace("Student", "")
+        .replace("€", "")
+        .strip()
+        .replace(",", ".")
+    )
+
+    try:
+        return float(number_text)
+    except ValueError:
+        return None

@@ -91,6 +91,7 @@ def get_hertsi_meal(
         additional_diet_info = course.get("additionalDietInfo") or {}
         allergen_text = additional_diet_info.get("allergens_en") or ""
         diets = parse_sodexo_diets(course)
+        student_price = parse_sodexo_student_price(course)
                 
         allergens = set()
         for allergen in allergen_text.split(","):
@@ -103,8 +104,31 @@ def get_hertsi_meal(
             name=course["title_en"],
             diets=diets,
             allergens=allergens,
+            price=student_price,
         )
 
         meals.append(meal)
 
     return meals
+
+def parse_sodexo_student_price(
+    course: dict,
+) -> float | None:
+    raw_price = course.get("price") or ""
+
+    if not raw_price:
+        return None
+
+    student_price = raw_price.split("/")[0]
+
+    number_text = (
+        student_price
+        .replace("€", "")
+        .strip()
+        .replace(",", ".")
+    )
+
+    try:
+        return float(number_text)
+    except ValueError:
+        return None

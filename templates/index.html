@@ -73,7 +73,16 @@
                         <!-- introducing Jinja here, creates article for each independent meal -->
                         {% for meal in restaurant_meals %}    
                             <article class="meal-card">
-                                <h3>{{ meal.name }}</h3>
+                                <div class="meal-card-header">
+                                    <h3>{{ meal.name }}</h3>
+
+                                    {% if meal.price is not none %}
+                                        <span class="meal-price">
+                                            {{ "%.2f" | format(meal.price) }} €
+                                        </span>
+                                    {% endif %}
+                                </div>
+
 
                                 <div class="diet-section">
                                     
