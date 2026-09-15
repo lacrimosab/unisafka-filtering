@@ -17,15 +17,29 @@
         <h1>Hervanta student restaurant meals</h1>
         
         <form class="date-form" method="get">
-            <div class="date-field">
-                <label for="menu-date">Menu date</label>
+            <div
+                class="date-ribbon"
+                role="group"
+                aria-label="Menu date"
+            >   
+                <!-- creating button for each date of the week -->
+                <!-- when clicked on 2026-09-16, browser submits ?menu_date=2026-09-16 -->
+                {% for day in week_dates %}
+                    <button
+                        type="submit"
+                        name="menu_date"
+                        value="{{ day.isoformat() }}"
+                        class="date-option{% if day.isoformat() == selected_date %} date-option--selected{% endif %}"
+                    >
+                        <span class="date-option-weekday">
+                            {{ day.strftime("%a") }}
+                        </span>
 
-                <input
-                    id="menu-date"
-                    name="menu_date"
-                    type="date"
-                    value="{{ selected_date }}"
-                >
+                        <span class="date-option-date">
+                            {{ day.strftime("%d %b") }}
+                        </span>
+                    </button>
+                {% endfor %}
             </div>
 
             <label class="filter-checkbox">
