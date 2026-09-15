@@ -1,4 +1,5 @@
 from datetime import date
+from src.models import Meal
 
 from bs4 import BeautifulSoup
 import requests
@@ -52,7 +53,11 @@ def fetch_reaktori_page() -> str:
 
     return response.text
 
-def get_reaktori_foods(selected_date: date) -> list[str]:
+# foods in the format {"So Good": [("Minced meat sauce", {"Lactose-free", "Milk-free"})]}
+def get_reaktori_foods(
+        selected_date: date
+    ) -> dict[str, list[tuple[str, set[str]]]]:
+
     html = fetch_reaktori_page()
     soup = BeautifulSoup(html, "html.parser")
 
@@ -92,7 +97,43 @@ def get_reaktori_foods(selected_date: date) -> list[str]:
 
         if element.name == "li" and current_category is not None:
             food_text = element.get_text(" ", strip=True)
-            foods_by_category[current_category].append(food_text)
+            food_name, diets = parse_compass_food(food_text)
+
+            foods_by_category[current_category].append(
+                (food_name, diets)
+            )
 
     return foods_by_category
 
+def get_reaktori_meals(
+    selected_date: date,
+) -> list[Meal]:
+    foods_by_category = get_reaktori_foods(selected_date)
+
+    meals = []
+
+    for foods in foods_by_category.values():
+        if not foods:
+            continue
+
+        food_names = [
+            food_name
+            for food_name, _ in foods
+        ]
+
+        shared_diets = foods[0][1].copy()
+
+        for _, diets in foods[1:]:
+            shared_diets.intersection_update(diets)
+
+        meal_name = " and ".join(food_names)
+
+        meal = Meal(
+            restaurant="Reaktori",
+            name=meal_name,
+            diets=shared_diets,
+        )
+
+        meals.append(meal)
+
+    return meals
