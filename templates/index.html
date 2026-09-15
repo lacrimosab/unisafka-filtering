@@ -79,6 +79,7 @@
                                     <div class="meal-card-footer">
                                         <div class="diet-labels">
                                             {% for diet in meal.diets | sort %}
+                                                <!-- creates two classes, one general and one specific -->
                                                 <span class="diet-label diet-label--{{ diet | lower | replace(' ', '-') }}">
                                                     {{ diet }}
                                                 </span>
@@ -86,7 +87,7 @@
                                                 <span class="diet-label diet-label--unknown">
                                                     No dietary information
                                                 </span>
-                                            {% endfor %}
+                                            {% endfor %}   
                                         </div>
 
                                         {% if meal.price is not none %}
@@ -94,17 +95,7 @@
                                                 {{ "%.2f" | format(meal.price) }} €
                                             </span>
                                         {% endif %}
-                                    </div>
-
-                                    <p class="allergen-summary">
-                                        {% if meal.allergens %}
-                                            Allergens:
-                                            {{ meal.allergens | sort | join(", ") }}
-                                        {% else %}
-                                            No detailed allergen information
-                                        {% endif %}
-                                    </p>
-                                
+                                    </div>                                
                             </article>
                         {% endfor %}
                     </div>
