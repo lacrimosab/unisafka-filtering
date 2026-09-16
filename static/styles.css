@@ -266,6 +266,17 @@ body {
     outline-offset: 2px;
 }
 
+.filter-empty-message {
+    margin: 2rem 0;
+    color: #68756c;
+    text-align: center;
+    font-weight: 600;
+}
+
+.filter-empty-message[hidden] {
+    display: none;
+}
+
 .restaurant-section {
     margin-top: 2.5rem;
 }

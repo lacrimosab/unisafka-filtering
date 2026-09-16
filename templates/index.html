@@ -129,6 +129,13 @@
                         </div>
                     </section>
                 {% endfor %}
+                <p
+                    id="no-filter-results"
+                    class="filter-empty-message"
+                    hidden
+                >
+                    No meals match the selected filters.
+                </p>
             {% else %}
                 <p>No meals were found for this date.</p>
             {% endif %}

@@ -11,6 +11,10 @@ const restaurantSections = mealResults.querySelectorAll(
     ".restaurant-section"
 );
 
+const noFilterResults = document.querySelector(
+    "#no-filter-results"
+);
+
 // function that runs after checkbox changes
 function handleFilterChange() {
     const veganOnly = filterForm.querySelector(
@@ -55,14 +59,23 @@ function handleFilterChange() {
         const hasVisibleMeals = visibleMeal !== null;
 
         restaurantSection.hidden = !hasVisibleMeals;
-    })
+    });
+    
+    if (noFilterResults !== null) {
+        const visibleMeal = mealResults.querySelector(
+            ".meal-card:not([hidden])"
+        );
 
+        const hasAnyVisibleMeal = visibleMeal !== null;
+
+        noFilterResults.hidden = hasAnyVisibleMeal;
+    }
 }
 
 // visits all three checkboxes; addEventListener connects each checkbox to the function
 filterCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", handleFilterChange);
-})
+});
 
 handleFilterChange();
 document.documentElement.classList.add("js-enabled");
