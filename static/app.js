@@ -67,7 +67,8 @@ function handleFilterChange() {
         );
 
         const hasAnyVisibleMeal = visibleMeal !== null;
-
+        
+        // message is only shown when there is no meal card
         noFilterResults.hidden = hasAnyVisibleMeal;
     }
 }
@@ -77,5 +78,6 @@ filterCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", handleFilterChange);
 });
 
+// this call is necessary because it performs synchronization immediately
 handleFilterChange();
 document.documentElement.classList.add("js-enabled");
