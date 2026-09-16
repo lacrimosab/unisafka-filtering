@@ -91,7 +91,9 @@
                         <div class="meal-grid">
                             <!-- introducing Jinja here, creates article for each independent meal -->
                             {% for meal in restaurant_meals %}    
-                                <article class="meal-card">
+                                <article 
+                                    class="meal-card"
+                                    data-diets="{{ meal.diets | join('|') }}">
                                     <h3 class="meal-name">
                                         {{ meal.name }}
                                     </h3>

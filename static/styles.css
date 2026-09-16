@@ -136,6 +136,10 @@ body {
     box-shadow: 0 4px 18px rgba(29, 42, 33, 0.07);
 }
 
+.meal-card[hidden] {
+    display: none;
+}
+
 .meal-name {
     margin: 0;
     font-size: 1rem;
