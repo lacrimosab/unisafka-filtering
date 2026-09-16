@@ -65,3 +65,4 @@ filterCheckboxes.forEach((checkbox) => {
 })
 
 handleFilterChange();
+document.documentElement.classList.add("js-enabled");
