@@ -7,6 +7,10 @@ const filterCheckboxes = filterForm.querySelectorAll(
 
 const mealCards = mealResults.querySelectorAll(".meal-card");
 
+const restaurantSections = mealResults.querySelectorAll(
+    ".restaurant-section"
+);
+
 // function that runs after checkbox changes
 function handleFilterChange(event) {
     const veganOnly = filterForm.querySelector(
@@ -42,6 +46,17 @@ function handleFilterChange(event) {
         
         mealCard.hidden = !matchesAllFilters;
     });
+
+    restaurantSections.forEach((restaurantSection) => {
+        const visibleMeal = restaurantSection.querySelector(
+            ".meal-card:not([hidden])"
+        );
+
+        const hasVisibleMeals = visibleMeal !== null;
+
+        restaurantSection.hidden = !hasVisibleMeals;
+    })
+
 }
 
 // visits all three checkboxes; addEventListener connects each checkbox to the function

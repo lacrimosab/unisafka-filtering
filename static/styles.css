@@ -230,6 +230,10 @@ body {
     margin-top: 2.5rem;
 }
 
+.restaurant-section[hidden] {
+    display: none;
+}
+
 .restaurant-heading {
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
