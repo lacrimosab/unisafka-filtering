@@ -12,7 +12,7 @@ const restaurantSections = mealResults.querySelectorAll(
 );
 
 // function that runs after checkbox changes
-function handleFilterChange(event) {
+function handleFilterChange() {
     const veganOnly = filterForm.querySelector(
         '[name="vegan_only"]'
     ).checked;
@@ -63,3 +63,5 @@ function handleFilterChange(event) {
 filterCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", handleFilterChange);
 })
+
+handleFilterChange();

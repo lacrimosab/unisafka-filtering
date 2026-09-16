@@ -37,10 +37,10 @@ def home(
     hertsi_meals = get_hertsi_meal(selected_date)
     reaktori_meals = get_reaktori_meals(requested_date)
 
-    meals = hertsi_meals + reaktori_meals
+    all_meals = hertsi_meals + reaktori_meals
 
-    meals = filter_meals(
-    meals=meals,
+    visible_meals = filter_meals(
+    meals=all_meals,
     vegan_only=vegan_only,
     gluten_free_only=gluten_free_only,
     lactose_free_only=lactose_free_only,
@@ -49,7 +49,8 @@ def home(
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={"meals": meals,
+        context={"meals": all_meals,
+            "visible_meals": visible_meals,
             "selected_date": selected_date,
             "week_dates": week_dates,
             "vegan_only": vegan_only, # added to keep checkbox even after page reload
