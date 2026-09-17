@@ -3,8 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from datetime import date, timedelta
-from src.providers.sodexo import get_hertsi_meal
-from src.providers.compass import get_reaktori_meals
+from src.menu_service import get_meals_for_date
 from src.filtering import filter_meals
 
 app = FastAPI()
@@ -34,10 +33,7 @@ def home(
         for day_offset in range(6)
     ]
 
-    hertsi_meals = get_hertsi_meal(selected_date)
-    reaktori_meals = get_reaktori_meals(requested_date)
-
-    all_meals = hertsi_meals + reaktori_meals
+    all_meals = get_meals_for_date(selected_date)
 
     visible_meals = filter_meals(
     meals=all_meals,
