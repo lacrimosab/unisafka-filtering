@@ -36,11 +36,11 @@ def home(
     all_meals = get_meals_for_date(selected_date)
 
     visible_meals = filter_meals(
-    meals=all_meals,
-    vegan_only=vegan_only,
-    gluten_free_only=gluten_free_only,
-    lactose_free_only=lactose_free_only,
-)
+        meals=all_meals,
+        vegan_only=vegan_only,
+        gluten_free_only=gluten_free_only,
+        lactose_free_only=lactose_free_only,
+    )
 
     return templates.TemplateResponse(
         request=request,

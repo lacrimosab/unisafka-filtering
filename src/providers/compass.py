@@ -1,9 +1,10 @@
 from datetime import date
-from src.models import Meal
 from dataclasses import dataclass
 
 from bs4 import BeautifulSoup
 import requests
+
+from src.models import Meal
 
 
 REAKTORI_URL = (
@@ -60,13 +61,19 @@ def fetch_reaktori_page() -> str:
 
     return response.text
 
-# foods in the format {"So Good": [("Minced meat sauce", {"Lactose-free", "Milk-free"})]}
-def get_reaktori_foods(
-        selected_date: date
-    ) -> dict[str, ReaktoriCategory]:
+def parse_reaktori_page(
+    html: str,
+) -> BeautifulSoup:
+    return BeautifulSoup(
+        html,
+        "html.parser",
+    )
 
-    html = fetch_reaktori_page()
-    soup = BeautifulSoup(html, "html.parser")
+# foods in the format {"So Good": [("Minced meat sauce", {"Lactose-free", "Milk-free"})]}
+def parse_reaktori_foods_for_date(
+        soup: BeautifulSoup, 
+        selected_date: date,
+    ) -> dict[str, ReaktoriCategory]:
 
     date_text = (
         f"{selected_date.day}."
@@ -127,10 +134,14 @@ def get_reaktori_foods(
 
     return foods_by_category
 
-def get_reaktori_meals(
+def parse_reaktori_meals_for_date(
+    soup: BeautifulSoup,
     selected_date: date,
 ) -> list[Meal]:
-    foods_by_category = get_reaktori_foods(selected_date)
+    foods_by_category = parse_reaktori_foods_for_date(
+        soup,
+        selected_date,
+    )
 
     meals = []
 
@@ -156,12 +167,23 @@ def get_reaktori_meals(
             restaurant="Reaktori",
             name=meal_name,
             diets=shared_diets,
-            price=category.price
+            price=category.price,
         )
 
         meals.append(meal)
 
     return meals
+
+def get_reaktori_meals(
+    selected_date: date,
+) -> list[Meal]:
+    html = fetch_reaktori_page()
+    soup = parse_reaktori_page(html)
+
+    return parse_reaktori_meals_for_date(
+        soup,
+        selected_date,
+    )
 
 def parse_compass_student_price(
     price_text: str,
