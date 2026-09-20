@@ -3,6 +3,11 @@ import requests
 
 from src.models import Meal
 
+SODEXO_URL = (
+    "https://www.sodexo.fi/"
+    "ruokalistat/output/weekly_json/111"
+)
+
 SODEXO_DIET_LABELS = {
     "G": "Gluten-free",
     "L": "Lactose-free",
@@ -42,35 +47,26 @@ def parse_sodexo_diets(course: dict) -> set[str]:
 
     return diets
 
-def get_hertsi_meal(
-    selected_date: str,
-) -> list[Meal]:
-    requested_date = date.fromisoformat(selected_date)
-    current_date = date.today()
-
-    requested_week = requested_date.isocalendar()
-    current_week = current_date.isocalendar()
-
-    # prevent dates outside the current week from selecting the wrong weekday
-    if (requested_week.year, requested_week.week) != (current_week.year, current_week.week):
-        return []
-
-    url = (
-        "https://www.sodexo.fi/"
-        "ruokalistat/output/weekly_json/111"
+def fetch_sodexo_week() -> dict:
+    response = requests.get(
+        SODEXO_URL,
+        timeout=10
     )
-
-    response = requests.get(url, timeout=10)
     response.raise_for_status()
-
     response.encoding = "utf-8"
-    data = response.json()
 
+    return response.json()
+
+def parse_hertsi_meals_for_date(
+    data: dict,
+    requested_date: date,
+) -> list[Meal]:
     weekday_name = FINNISH_WEEKDAYS[
         requested_date.weekday()
     ]
 
     selected_day = None
+
     for meal_date in data.get("mealdates") or []:
         if meal_date.get("date") == weekday_name:
             selected_day = meal_date
@@ -81,21 +77,26 @@ def get_hertsi_meal(
 
     courses = selected_day.get("courses")
 
-    # true for an empty list, empty dict, and any missing values
-    if not courses:       
+    if not courses:
         return []
 
     meals = []
-    for course in courses.values():
 
-        additional_diet_info = course.get("additionalDietInfo") or {}
-        allergen_text = additional_diet_info.get("allergens_en") or ""
+    for course in courses.values():
+        additional_diet_info = (
+            course.get("additionalDietInfo") or {}
+        )
+        allergen_text = (
+            additional_diet_info.get("allergens_en") or ""
+        )
         diets = parse_sodexo_diets(course)
         student_price = parse_sodexo_student_price(course)
-                
+
         allergens = set()
+
         for allergen in allergen_text.split(","):
             cleaned_allergen = allergen.strip()
+
             if cleaned_allergen:
                 allergens.add(cleaned_allergen)
 
@@ -112,6 +113,7 @@ def get_hertsi_meal(
 
     return meals
 
+    
 def parse_sodexo_student_price(
     course: dict,
 ) -> float | None:
@@ -133,3 +135,28 @@ def parse_sodexo_student_price(
         return float(number_text)
     except ValueError:
         return None
+
+def get_hertsi_meal(
+    selected_date: str,
+) -> list[Meal]:
+    requested_date = date.fromisoformat(selected_date)
+    current_date = date.today()
+
+    request_week = requested_date.isocalendar()
+    current_week = current_date.isocalendar()
+
+    if (
+        request_week.year,
+        request_week.week
+    ) != (
+        current_week.year,
+        current_week.week,
+    ):
+        return []
+
+    data = fetch_sodexo_week()
+
+    return parse_hertsi_meals_for_date(
+        data,
+        requested_date,
+    )
