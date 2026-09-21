@@ -100,9 +100,23 @@ def parse_hertsi_meals_for_date(
             if cleaned_allergen:
                 allergens.add(cleaned_allergen)
 
+        english_name = (
+            course.get("title_en") or ""
+        ).strip()
+
+        finnish_name = (
+            course.get("title_fi") or ""
+        )
+
+        meal_name = (
+            english_name
+            or finnish_name
+            or "unnamed meal"
+        )
+
         meal = Meal(
             restaurant="Hertsi",
-            name=course["title_en"],
+            name=meal_name,
             diets=diets,
             allergens=allergens,
             allergen_details_available=bool(allergens),

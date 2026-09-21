@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from datetime import date, timedelta
-from src.menu_service import get_meals_for_date
+from src.menu_service import get_meals_for_week
 from src.filtering import filter_meals
 
 app = FastAPI()
@@ -33,7 +33,12 @@ def home(
         for day_offset in range(6)
     ]
 
-    all_meals = get_meals_for_date(selected_date)
+    meals_by_date = get_meals_for_week(week_start)
+
+    all_meals = meals_by_date.get(
+        selected_date,
+        [],
+    ).copy()
 
     visible_meals = filter_meals(
         meals=all_meals,
@@ -45,7 +50,9 @@ def home(
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={"meals": all_meals,
+        context={
+            "meals": all_meals,
+            "meals_by_date": meals_by_date,
             "visible_meals": visible_meals,
             "selected_date": selected_date,
             "week_dates": week_dates,
