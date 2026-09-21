@@ -62,7 +62,11 @@ function handleFilterChange() {
     });
     
     if (noFilterResults !== null) {
-        const visibleMeal = mealResults.querySelector(
+        const selectedDayResults = noFilterResults.closest(
+            ".day-results"
+        );
+
+        const visibleMeal = selectedDayResults.querySelector(
             ".meal-card:not([hidden])"
         );
 
