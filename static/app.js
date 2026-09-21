@@ -5,14 +5,18 @@ const filterCheckboxes = filterForm.querySelectorAll(
     'input[type="checkbox"]'
 );
 
+const dateButtons = filterForm.querySelectorAll(
+    ".date-option"
+);
+
+const dayResults = mealResults.querySelectorAll(
+    ".day-results"
+);
+
 const mealCards = mealResults.querySelectorAll(".meal-card");
 
 const restaurantSections = mealResults.querySelectorAll(
     ".restaurant-section"
-);
-
-const noFilterResults = document.querySelector(
-    "#no-filter-results"
 );
 
 // function that runs after checkbox changes
@@ -60,27 +64,60 @@ function handleFilterChange() {
 
         restaurantSection.hidden = !hasVisibleMeals;
     });
+
+    const selectedDayResults = mealResults.querySelector(
+        ".day-results:not([hidden])"
+    );
+
+    const noFilterResults = selectedDayResults.querySelector(
+        ".no-filter-results"
+    );
     
     if (noFilterResults !== null) {
-        const selectedDayResults = noFilterResults.closest(
-            ".day-results"
-        );
 
-        const visibleMeal = selectedDayResults.querySelector(
-            ".meal-card:not([hidden])"
-        );
+        if (noFilterResults !== null) {
+            const visibleMeal = selectedDayResults.querySelector(
+                ".meal-card:not([hidden])"
+            );
 
-        const hasAnyVisibleMeal = visibleMeal !== null;
-        
-        // message is only shown when there is no meal card
-        noFilterResults.hidden = hasAnyVisibleMeal;
+            noFilterResults.hidden = visibleMeal !== null;
+        }
     }
 }
+
+function handleDateClick(event) {
+    event.preventDefault();
+
+    const selectedButton = event.currentTarget;
+    const selectedDate = selectedButton.value;
+
+    dateButtons.forEach((dateButton) => {
+        dateButton.classList.toggle(
+            "date-option--selected",
+            dateButton === selectedButton
+        );
+    });
+
+    dayResults.forEach((dayResult) => {
+        dayResult.hidden =
+            dayResult.dataset.menuDate !== selectedDate;
+    });
+
+    handleFilterChange();
+}
+
+dateButtons.forEach((dateButton) => {
+    dateButton.addEventListener(
+        "click",
+        handleDateClick
+    );
+});
 
 // visits all three checkboxes; addEventListener connects each checkbox to the function
 filterCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", handleFilterChange);
 });
+
 
 // this call is necessary because it performs synchronization immediately
 handleFilterChange();
