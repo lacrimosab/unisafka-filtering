@@ -1,4 +1,8 @@
+from datetime import date
+
 import requests
+
+from src.models import Meal
 
 JUVENES_URL = (
     "https://fi.jamix.cloud/apps/menuservice/"
@@ -45,3 +49,38 @@ def parse_juvenes_diets(
             diets.add(label)
 
     return diets
+
+def parse_juvenes_meal_option(
+    meal_option: dict,
+    restaurant: str,
+) -> Meal | None:
+    # converts one grouped meal option into one Meal object
+    menu_items = [
+        item 
+        for item in meal_option.get("menuItems") or []
+        if (item.get("name") or "").strip()
+    ]
+
+    if not menu_items:
+        return None
+
+    food_names = [
+        item["name"].strip()
+        for item in menu_items
+    ]
+
+    shared_diets = parse_juvenes_diets(
+        menu_items[0].get("diets")
+    )
+
+    for item in menu_items[1:]:
+        item_diets = parse_juvenes_diets(
+            item.get("diets")
+        )
+        shared_diets.intersection_update(item_diets)
+
+    return Meal(
+        restaurant=restaurant,
+        name=" and ".join(food_names),
+        diets=shared_diets,
+    )
