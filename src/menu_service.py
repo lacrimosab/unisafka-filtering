@@ -13,6 +13,10 @@ from src.providers.sodexo import (
     fetch_sodexo_week,
     parse_hertsi_meals_for_date,
 )
+from src.providers.juvenes import (
+    fetch_juvenes_week,
+    parse_juvenes_meals_for_date,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +80,7 @@ def get_meals_for_week(
         logger.exception("Could not download Sodexo menu")
         sodexo_data = None
         providers_succeeded = False
+
     try:
         reaktori_html = fetch_reaktori_page()
         reaktori_soup = parse_reaktori_page(reaktori_html)
@@ -83,6 +88,14 @@ def get_meals_for_week(
         logger.exception("Could not download Reaktori menu")
         reaktori_soup = None
         providers_succeeded = False
+
+    try:
+        juvenes_data = fetch_juvenes_week()
+    except RequestException:
+        logger.exception("Could not download Juvenes menu")
+        juvenes_data = None
+        providers_succeeded = False
+
 
     current_week = date.today().isocalendar()
     meals_by_date: MealsByDate = {}
@@ -114,10 +127,20 @@ def get_meals_for_week(
         else:
             reaktori_meals = []
 
+        if juvenes_data is not None:
+            juvenes_meals = parse_juvenes_meals_for_date(
+                juvenes_data,
+                requested_date,
+            )
+        else:
+            juvenes_meals = []
+
         date_key = requested_date.isoformat()
 
         meals_by_date[date_key] = (
-            hertsi_meals + reaktori_meals
+            hertsi_meals + 
+            reaktori_meals +
+            juvenes_meals
         )
 
     # caching only a complete successful week

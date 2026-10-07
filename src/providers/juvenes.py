@@ -89,6 +89,8 @@ def parse_juvenes_meals_for_date(
     data: list[dict],
     requested_date: date,
 ) -> list[Meal]:
+    # navigates the Jamix hierarchy and find the correct 
+    # restaurant and date
     date_number = int(requested_date.strftime("%Y%m%d"))
     meals = []
 
