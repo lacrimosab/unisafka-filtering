@@ -18,14 +18,14 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/", response_class=HTMLResponse)
 def home(
     request: Request,
-    menu_date: str | None = None,
+    menu_date: date | None = None,
     vegan_only: bool = False,
     gluten_free_only: bool = False,
     lactose_free_only: bool = False,
 ):
 
-    selected_date = menu_date or date.today().isoformat()
-    requested_date = date.fromisoformat(selected_date)
+    requested_date = menu_date or date.today()
+    selected_date = requested_date.isoformat()
 
     week_start = requested_date - timedelta(days=requested_date.weekday())
     week_dates = [
