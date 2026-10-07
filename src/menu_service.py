@@ -30,9 +30,22 @@ def copy_meals_by_date(
         for menu_date, meals in meals_by_date.items()
     } 
 
+def _remove_expired_cache_entries() -> None:
+    current_time = monotonic()
+
+    cached_entries = list(_week_cache.items())
+
+    for week_key, (cached_at, _) in cached_entries:
+        cache_age = current_time - cached_at
+
+        if cache_age >= CACHE_LIFETIME_SECONDS:
+            _week_cache.pop(week_key, None)
+
 def get_meals_for_week(
     week_start: date,
 ) -> MealsByDate:
+    _remove_expired_cache_entries()
+    
     week_key = week_start.isoformat()
     cached_entry = _week_cache.get(week_key)
 
