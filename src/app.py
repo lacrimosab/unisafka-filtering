@@ -25,6 +25,10 @@ def home(
 ):
 
     requested_date = menu_date or date.today()
+
+    if requested_date.weekday() == 6:
+        requested_date -= timedelta(days=1)
+        
     selected_date = requested_date.isoformat()
 
     week_start = requested_date - timedelta(days=requested_date.weekday())
