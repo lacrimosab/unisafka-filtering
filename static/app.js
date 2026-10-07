@@ -74,15 +74,12 @@ function handleFilterChange() {
     );
     
     if (noFilterResults !== null) {
+        const visibleMeal = selectedDayResults.querySelector(
+            ".meal-card:not([hidden])"
+        );
 
-        if (noFilterResults !== null) {
-            const visibleMeal = selectedDayResults.querySelector(
-                ".meal-card:not([hidden])"
-            );
-
-            noFilterResults.hidden = visibleMeal !== null;
-        }
-    }
+        noFilterResults.hidden = visibleMeal !== null;
+}
 }
 
 function handleDateClick(event) {
@@ -102,6 +99,10 @@ function handleDateClick(event) {
         dayResult.hidden =
             dayResult.dataset.menuDate !== selectedDate;
     });
+
+    const url = new URL(window.location.href);
+    url.searchParams.set("menu_date", selectedDate);
+    window.history.replaceState({}, "", url);
 
     handleFilterChange();
 }
