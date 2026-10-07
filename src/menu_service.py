@@ -1,6 +1,8 @@
+import logging
 from datetime import date, timedelta
 from time import monotonic
 
+from requests import RequestException
 from src.models import Meal
 from src.providers.compass import (
     fetch_reaktori_page,
@@ -12,6 +14,7 @@ from src.providers.sodexo import (
     parse_hertsi_meals_for_date,
 )
 
+logger = logging.getLogger(__name__)
 
 CACHE_LIFETIME_SECONDS = 10 * 60
 
@@ -65,10 +68,21 @@ def get_meals_for_week(
         for day_offset in range(6)
     ]
 
-    sodexo_data = fetch_sodexo_week()
+    providers_succeeded = True
 
-    reaktori_html = fetch_reaktori_page()
-    reaktori_soup = parse_reaktori_page(reaktori_html)
+    try:
+        sodexo_data = fetch_sodexo_week()
+    except RequestException:
+        logger.exception("Could not download Sodexo menu")
+        sodexo_data = None
+        providers_succeeded = False
+    try:
+        reaktori_html = fetch_reaktori_page()
+        reaktori_soup = parse_reaktori_page(reaktori_html)
+    except RequestException:
+        logger.exception("Could not download Reaktori menu")
+        reaktori_soup = None
+        providers_succeeded = False
 
     current_week = date.today().isocalendar()
     meals_by_date: MealsByDate = {}
@@ -76,13 +90,15 @@ def get_meals_for_week(
     for requested_date in week_dates:
         requested_week = requested_date.isocalendar()
 
-        if (
+        is_current_week = (
             requested_week.year,
             requested_week.week,
         ) == (
             current_week.year,
             current_week.week,
-        ):
+        )
+
+        if sodexo_data is not None and is_current_week:
             hertsi_meals = parse_hertsi_meals_for_date(
                 sodexo_data,
                 requested_date,
@@ -90,10 +106,13 @@ def get_meals_for_week(
         else:
             hertsi_meals = []
 
-        reaktori_meals = parse_reaktori_meals_for_date(
-            reaktori_soup,
-            requested_date,
-        )
+        if reaktori_soup is not None:
+            reaktori_meals = parse_reaktori_meals_for_date(
+                reaktori_soup,
+                requested_date,
+            )
+        else:
+            reaktori_meals = []
 
         date_key = requested_date.isoformat()
 
@@ -101,10 +120,12 @@ def get_meals_for_week(
             hertsi_meals + reaktori_meals
         )
 
-    _week_cache[week_key] = (
-        monotonic(),
-        copy_meals_by_date(meals_by_date),
-    )
+    # caching only a complete successful week
+    if providers_succeeded:
+        _week_cache[week_key] = (
+            monotonic(),
+            copy_meals_by_date(meals_by_date),
+        )
 
     return meals_by_date
 
