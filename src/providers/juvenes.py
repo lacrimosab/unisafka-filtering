@@ -84,3 +84,35 @@ def parse_juvenes_meal_option(
         name=" and ".join(food_names),
         diets=shared_diets,
     )
+
+def parse_juvenes_meals_for_date(
+    data: list[dict],
+    requested_date: date,
+) -> list[Meal]:
+    date_number = int(requested_date.strftime("%Y%m%d"))
+    meals = []
+
+    for kitchen in data:
+        for menu_type in kitchen.get("menuTypes") or []:
+            restaurant = JUVENES_RESTAURANTS.get(
+                menu_type.get("menuTypeId")
+            )
+
+            if restaurant is None:
+                continue
+
+            for menu in menu_type.get("menus") or []:
+                for day in menu.get("days") or []:
+                    if day.get("date") != date_number:
+                        continue
+
+                    for meal_option in day.get("mealoptions") or []:
+                        meal = parse_juvenes_meal_option(
+                            meal_option,
+                            restaurant,
+                        )
+
+                        if meal is not None:
+                            meals.append(meal)
+
+    return meals
