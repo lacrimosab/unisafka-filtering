@@ -95,19 +95,3 @@ def get_meals_for_week(
 
     return meals_by_date
 
-def get_meals_for_date(
-    selected_date: str,
-) -> list[Meal]:
-    requested_date = date.fromisoformat(selected_date)
-
-    week_start = requested_date - timedelta(
-        days=requested_date.weekday()
-    )
-
-    meals_by_date = get_meals_for_week(week_start)
-
-    return meals_by_date.get(
-        selected_date,
-        [],
-    ).copy()
-
